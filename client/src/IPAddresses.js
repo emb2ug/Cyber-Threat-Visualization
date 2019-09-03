@@ -3,7 +3,7 @@ import axios from 'axios'
 
 class IPAddresses extends Component {
     state = {
-        ip_addresses: []
+        ip_addresses: null
     };
 
     componentDidMount() {
@@ -11,25 +11,23 @@ class IPAddresses extends Component {
     }
 
     fetchIPs = async () => {
-
         await axios
-            .get("https://cors-anywhere.herokuapp.com/api.cybercure.ai/feed/get_ips")
+            .get("http://localhost:5000/fetch_ips")
 
             .then(response => {
-                //let first_ip = response.data.data.ip[0];
-                let all_ips = response.data.data.ip;
+                let all_ips = response.data
                 console.log("all_ips = " + all_ips);
 
                 this.setState({
                     ip_addresses: all_ips
                 })
             });
-    };
+    }
 
     render() {
         return (
             <div>
-                {this.state.ip_addresses.length > 0 ? <p>First IP: {this.state.ip_addresses[0]}</p> : <div/>}
+                {this.state.ip_addresses ? <p>First IP: {this.state.ip_addresses[0]}</p> : <div/>}
             </div>
         );
     }

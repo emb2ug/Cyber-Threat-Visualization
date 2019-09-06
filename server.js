@@ -39,12 +39,12 @@ app.get('/fetch_ips', (req, res) => {
 
 
 app.get('/fetch_data_by_ip/:ip', (req, res) => {
-    console.log("API KEY = " + IPSTACK_API_KEY)
+    //console.log("API KEY = " + IPSTACK_API_KEY)
 
     try {
         let request_string = "http://api.ipstack.com/" + req.params.ip + "?access_key=" + IPSTACK_API_KEY + "&fields=ip,location,city,region_name,latitude,longitude&output=json"
-        console.log(request_string)
-        console.log("")
+        //console.log(request_string)
+        //console.log("")
 
         // API CALL FOR LOCATION
         axios

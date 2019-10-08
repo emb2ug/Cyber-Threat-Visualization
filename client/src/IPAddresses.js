@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import VisualizationMap from "./VisualizationMap";
+import { Checkbox } from 'antd';
 
 const REACT_APP_GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
 
@@ -8,7 +9,9 @@ class IPAddresses extends Component {
     state = {
         ip_addresses: [],
         location_data: [],
-        lats_and_longs: []
+        lats_and_longs: [],
+        continents: [],
+        selectedContinents: []
     };
 
     componentDidMount() {
@@ -21,6 +24,9 @@ class IPAddresses extends Component {
         let all_ips = null
         let all_location_data = null
         let all_lats_and_longs = null
+        let all_unique_continents = null
+
+
         await axios
             .get("http://localhost:5000/fetch_ips")
 
@@ -30,15 +36,22 @@ class IPAddresses extends Component {
 
                 all_location_data = []
                 all_lats_and_longs = []
+                all_unique_continents = []
                 all_ips.map(ip => {
                     axios
-                        .get("http://localhost:5000/fetch_data_by_ip_old/" + ip)
+                        .get("http://localhost:5000/fetch_data_by_ip/" + ip)
                         .then(response => {
-                            console.log(response.data)
+                            //console.log(response.data)
                             all_location_data.push(response.data)
 
                             let temp_lat = response.data.latitude
                             let temp_long = response.data.longitude
+                            let continent_name = response.data.continent_name
+
+                            if(!all_unique_continents.includes(continent_name)){
+                                all_unique_continents.push(continent_name)
+                            }
+
 
                             let temp_lat_and_long = {
                                 latitude: temp_lat,
@@ -50,7 +63,9 @@ class IPAddresses extends Component {
                             this.setState({
                                 ip_addresses: all_ips,
                                 location_data: all_location_data,
-                                lats_and_longs: all_lats_and_longs
+                                lats_and_longs: all_lats_and_longs,
+                                continents: all_unique_continents,
+                                selectedContinents: all_unique_continents
                             })
 
 
@@ -63,26 +78,34 @@ class IPAddresses extends Component {
             })
     }
 
+    onChange = (checkedValues) => {
+        console.log('checked = ', checkedValues);
+        this.setState({
+            selectedContinents :checkedValues
+        })
+    }
+
     render() {
+        console.log(this.state.continents)
         return (
             <div>
 
                 <button onClick={this.fetchDataForIPs}>Populate Map</button>
 
-
-                <div>
-                    {this.state.ip_addresses.length > 0 ? <p>First IP: {this.state.ip_addresses[0]}</p> : <div/>}
-                    {this.state.location_data.length > 0 ?
-                        <p>
-                            First Lat/Long: {this.state.location_data[0].latitude + ", " +
-                            this.state.location_data[0].longitude}
-                        </p>
-                        : <div/>}
-                </div>
-
                 <div>
                     {this.state.lats_and_longs.length > 0 ?
-                        <VisualizationMap location_data={this.state.lats_and_longs}/> : <div/>}
+                        <Checkbox.Group options={this.state.continents} defaultValue={this.state.continents} onChange={this.onChange} /> : <div/>}
+                </div>
+
+
+
+                <div>
+                    <div>
+                        {this.state.lats_and_longs.length > 0 ?
+                            <VisualizationMap filter={this.state.selectedContinents} location_data={this.state.location_data}/> : <div/>}
+                    </div>
+
+
                 </div>
             </div>
 

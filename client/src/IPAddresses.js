@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import VisualizationMap from "./VisualizationMap";
+import 'antd/dist/antd.css';
 import { Checkbox } from 'antd';
+import { Button } from 'antd';
+
 
 const REACT_APP_GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
 
@@ -86,11 +89,11 @@ class IPAddresses extends Component {
     }
 
     render() {
-        console.log(this.state.continents)
         return (
             <div>
 
-                <button onClick={this.fetchDataForIPs}>Populate Map</button>
+                <Button type="primary" onClick={this.fetchDataForIPs}>Populate Map</Button>
+
 
                 <div>
                     {this.state.lats_and_longs.length > 0 ?

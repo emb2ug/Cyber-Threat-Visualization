@@ -92,8 +92,17 @@ class IPAddresses extends Component {
         return (
             <div>
 
-                <Button type="primary" onClick={this.fetchDataForIPs}>Populate Map</Button>
 
+                <div>
+                    {this.state.lats_and_longs.length === 0 ?
+                    <Button type="primary" onClick={this.fetchDataForIPs}>Populate Map</Button> : <div/>}
+                </div>
+
+
+                <div>
+                    {this.state.lats_and_longs.length > 0 ?
+                        <p>Filter by Continent</p> : <div/>}
+                </div>
 
                 <div>
                     {this.state.lats_and_longs.length > 0 ?
